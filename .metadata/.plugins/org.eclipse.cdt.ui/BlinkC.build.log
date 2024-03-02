@@ -1,0 +1,10 @@
+13:15:02 **** Incremental Build of configuration Debug for project BlinkC ****
+make -j12 all 
+arm-none-eabi-size   BlinkC.elf 
+   text	   data	    bss	    dec	    hex	filename
+   5764	     20	   1572	   7356	   1cbc	BlinkC.elf
+Finished building: default.size.stdout
+ 
+
+13:15:03 Build Finished. 0 errors, 0 warnings. (took 396ms)
+
