@@ -1,14 +1,17 @@
-18:57:20 **** Incremental Build of configuration Release for project BlinkCMSIS ****
+17:54:54 **** Incremental Build of configuration Release for project BlinkCMSIS_F103 ****
 make -j16 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -DSTM32F407xx -c -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
-arm-none-eabi-gcc -o "BlinkCMSIS.elf" @"objects.list"   -mcpu=cortex-m4 -T"E:\Creations\C++_programs\STM32Projects\BlinkCMSIS\STM32F407VETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="BlinkCMSIS.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: BlinkCMSIS.elf
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m3 -std=gnu11 -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "BlinkCMSIS_F103.elf" @"objects.list"   -mcpu=cortex-m3 -T"E:\Creations\C++_programs\STM32Projects\BlinkCMSIS_F103\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="BlinkCMSIS_F103.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: BlinkCMSIS_F103.elf
  
-arm-none-eabi-size   BlinkCMSIS.elf 
-arm-none-eabi-objdump -h -S  BlinkCMSIS.elf  > "BlinkCMSIS.list"
+arm-none-eabi-size   BlinkCMSIS_F103.elf 
+arm-none-eabi-objdump -h -S  BlinkCMSIS_F103.elf  > "BlinkCMSIS_F103.list"
+arm-none-eabi-objcopy  -O ihex  BlinkCMSIS_F103.elf  "BlinkCMSIS_F103.hex"
    text	   data	    bss	    dec	    hex	filename
-    684	      8	   1568	   2260	    8d4	BlinkCMSIS.elf
+    568	      8	   1568	   2144	    860	BlinkCMSIS_F103.elf
 Finished building: default.size.stdout
  
-Finished building: BlinkCMSIS.list
+Finished building: BlinkCMSIS_F103.list
+Finished building: BlinkCMSIS_F103.hex
+ 
  

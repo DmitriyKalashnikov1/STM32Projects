@@ -1,0 +1,42 @@
+/* USER CODE BEGIN Header */
+/**
+  ******************************************************************************
+  * @file           : main.c
+  * @brief          : Main program body
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2024 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  F103C8
+  */
+/* USER CODE END Header */
+/* Includes ------------------------------------------------------------------*/
+#include "stm32f103xb.h"
+
+void delay(){
+	for(uint32_t i=0; i < 250000; i++){}
+}
+
+int main(){
+	RCC->CR |= RCC_CR_HSEON; // turn on ext. clock
+	RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;  // turn on clock on port A
+
+	GPIOA->CRL &= ~(GPIO_CRL_MODE0 | GPIO_CRL_CNF0 | GPIO_CRL_MODE1 | GPIO_CRL_CNF1); //reset PA0, PA1
+
+	GPIOA->CRL |= GPIO_CRL_MODE0_1; //PA0 to output with max speed 2MHz
+	GPIOA->CRL |= GPIO_CRL_MODE1_1; //PA1 to output with max speed 2MHz
+
+	GPIOA->ODR |= GPIO_ODR_ODR0; // PA0 to HIGH
+
+	while (1){
+		GPIOA->ODR ^= GPIO_ODR_ODR1; //Invert state of PA1;
+		delay(); // delay 1s
+	}
+}
