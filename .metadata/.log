@@ -1194,3 +1194,54 @@ java.lang.Exception: Resource '/BlinkCMSIS_F103/Release/Drivers/STM32F1xx_HAL_Dr
 
 !ENTRY org.eclipse.cdt.core 1 0 2024-03-16 17:38:08.595
 !MESSAGE Indexed 'BlinkCMSIS_F103' (1 sources, 34 headers) in 1,38 sec: 3 359 declarations; 8 472 references; 3 unresolved inclusions; 35 syntax errors; 186 unresolved names (1,5 %)
+!SESSION 2024-03-27 18:24:09.385 -----------------------------------------------
+eclipse.buildId=Version 1.9.0
+java.version=11.0.11
+java.vendor=AdoptOpenJDK
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=ru_RU
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2024-03-27 18:24:14.957
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2024-03-27 18:24:15.058
+!MESSAGE Log4j initialized with config file E:\Creations\C++_programs\STM32Projects\.metadata\.log4j.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-03-27 18:24:22.473
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2024-03-27 18:29:17.625
+!MESSAGE Indexed 'InterruptsCMSIS_F103' (19 sources, 101 headers) in 2.56 sec: 3,848 declarations; 13,486 references; 0 unresolved inclusions; 1 syntax errors; 0 unresolved names (0%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2024-03-27 18:35:59.165
+!MESSAGE Indexed 'InterruptsCMSIS_F103' (1 sources, 16 headers) in 0.236 sec: 770 declarations; 1,805 references; 0 unresolved inclusions; 0 syntax errors; 0 unresolved names (0%)
+!SESSION 2024-03-29 08:28:56.587 -----------------------------------------------
+eclipse.buildId=Version 1.9.0
+java.version=11.0.11
+java.vendor=AdoptOpenJDK
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=ru_RU
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2024-03-29 08:29:03.053
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2024-03-29 08:29:03.152
+!MESSAGE Log4j initialized with config file E:\Creations\C++_programs\STM32Projects\.metadata\.log4j.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-03-29 08:29:11.696
+!MESSAGE Started RMI Server, listening on port 41337
+!SESSION 2024-03-29 18:39:36.942 -----------------------------------------------
+eclipse.buildId=Version 1.9.0
+java.version=11.0.11
+java.vendor=AdoptOpenJDK
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=ru_RU
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2024-03-29 18:39:43.014
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2024-03-29 18:39:43.250
+!MESSAGE Log4j initialized with config file E:\Creations\C++_programs\STM32Projects\.metadata\.log4j.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-03-29 18:39:51.389
+!MESSAGE Started RMI Server, listening on port 41337
