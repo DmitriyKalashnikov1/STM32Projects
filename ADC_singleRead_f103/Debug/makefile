@@ -51,6 +51,9 @@ default.size.stdout \
 OBJDUMP_LIST += \
 ADC_singleRead_f103.list \
 
+OBJCOPY_HEX += \
+ADC_singleRead_f103.hex \
+
 
 # All Target
 all: main-build
@@ -74,12 +77,17 @@ ADC_singleRead_f103.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_D
 	@echo 'Finished building: $@'
 	@echo ' '
 
+ADC_singleRead_f103.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "ADC_singleRead_f103.hex"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 # Other Targets
 clean:
-	-$(RM) ADC_singleRead_f103.elf ADC_singleRead_f103.list ADC_singleRead_f103.map default.size.stdout
+	-$(RM) ADC_singleRead_f103.elf ADC_singleRead_f103.hex ADC_singleRead_f103.list ADC_singleRead_f103.map default.size.stdout
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_HEX)
 
 fail-specified-linker-script-missing:
 	@echo 'Error: Cannot find the specified linker script. Check the linker settings in the build configuration.'

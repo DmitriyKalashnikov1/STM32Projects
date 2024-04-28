@@ -1,4 +1,4 @@
 ../Core/Src/main.c:22:6:delay	16	static
 ../Core/Src/main.c:26:6:setupRCCTo72MHz	4	static
-../Core/Src/main.c:45:10:ADC_Read	16	static
-../Core/Src/main.c:54:5:main	16	static
+../Core/Src/main.c:44:10:ADC_Read	4	static
+../Core/Src/main.c:52:5:main	16	static
