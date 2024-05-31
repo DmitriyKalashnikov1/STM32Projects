@@ -1,0 +1,14 @@
+../Core/Src/main.c:39:5:_write	12	static,ignoring_inline_asm
+../Core/Src/main.c:51:6:setupSWO	0	static
+../Core/Src/main.c:78:6:SysTick_Handler	0	static
+../Core/Src/main.c:84:6:setupSysTick	0	static
+../Core/Src/main.c:92:6:ADC_setup	0	static
+../Core/Src/main.c:106:6:delay_ms	0	static
+../Core/Src/main.c:115:6:setupRCCTo72MHz	0	static
+../Core/Src/main.c:134:6:beep	16	static
+../Core/Src/main.c:144:6:displaySpeed	0	static
+../Core/Src/main.c:184:10:ADC_Read_VBAT	0	static
+../Core/Src/main.c:198:10:ADC_Read_JoystickA	0	static
+../Core/Src/main.c:212:10:ADC_Read_JoystickB	0	static
+../Core/Src/main.c:226:6:displayBat	0	static
+../Core/Src/main.c:260:5:main	16	static

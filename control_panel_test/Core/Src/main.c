@@ -34,26 +34,41 @@
 // setup SWD printf
 #include <stdio.h>
 
-#define ITM_Port8(n)    (*((volatile unsigned char *)(0xE0000000+4*n)))
-#define ITM_Port16(n)   (*((volatile unsigned short*)(0xE0000000+4*n)))
-#define ITM_Port32(n)   (*((volatile unsigned long *)(0xE0000000+4*n)))
+int IsITMAvailable = 0;
 
-#define DEMCR           (*((volatile unsigned long *)(0xE000EDFC)))
-#define TRCENA          0x01000000
+int _write(int le, char *ptr, int len){
 
-struct __FILE {
-	int handle; /* Add whatever you need here */
-};
-FILE __stdout;
-FILE __stdin;
+int DataIdx;
 
-int fputc(int ch, FILE *f) {
-	if (DEMCR & TRCENA) {
-		while (ITM_Port32(0) == 0)
-			;
-		ITM_Port8(0) = ch;
+for(DataIdx = 0; DataIdx < len; DataIdx++){
+ITM_SendChar(*ptr++);
+}
+
+
+return len;
+}
+
+void setupSWO(uint32_t portMask, uint32_t cpuCoreFreqHz, uint32_t baudrate)
+{
+	uint32_t SWOPrescaler = (cpuCoreFreqHz / baudrate) - 1u ; // baudrate in Hz, note that cpuCoreFreqHz is expected to match the CPU core clock
+
+	CoreDebug->DEMCR = CoreDebug_DEMCR_TRCENA_Msk; 		// Debug Exception and Monitor Control Register (DEMCR): enable trace in core debug
+	DBGMCU->CR	= 0x00000027u ;							// DBGMCU_CR : TRACE_IOEN DBG_STANDBY DBG_STOP 	DBG_SLEEP
+	TPI->SPPR	= 0x00000002u ;							// Selected PIN Protocol Register: Select which protocol to use for trace output (2: SWO)
+	TPI->ACPR	= SWOPrescaler ;						// Async Clock Prescaler Register: Scale the baud rate of the asynchronous output
+	ITM->LAR	= 0xC5ACCE55u ;							// ITM Lock Access Register: C5ACCE55 enables more write access to Control Register 0xE00 :: 0xFFC
+	ITM->TCR	= 0x0001000Du ;							// ITM Trace Control Register
+	ITM->TPR	= ITM_TPR_PRIVMASK_Msk ;				// ITM Trace Privilege Register: All stimulus ports
+	ITM->TER	= portMask ;							// ITM Trace Enable Register: Enabled tracing on stimulus ports. One bit per stimulus port.
+	DWT->CTRL	= 0x400003FEu ;							// Data Watchpoint and Trace Register
+	TPI->FFCR	= 0x00000100u ;							// Formatter and Flush Control Register
+
+	// ITM/SWO works only if enabled from debugger.
+	// If ITM stimulus 0 is not free, don't try to send data to SWO
+	if (ITM->PORT [0].u8 == 1)
+	{
+		IsITMAvailable = 1;
 	}
-	return (ch);
 }
 // end setup swd printf
 
@@ -77,9 +92,8 @@ void setupSysTick() {
 void ADC_setup() {
 	ADC1->CR2 |= (ADC_CR2_ADON); // turn on adc
 	//	 adc calib
-	ADC1->CR2 |= (ADC_CR2_CAL); // start calib
-	while (!(ADC1->SR & ADC_CR2_CAL))
-		; //wait for end of calib
+	//ADC1->CR2 |= (ADC_CR2_CAL); // start calib
+	//while (!(ADC1->SR & ADC_CR2_CAL)); //wait for end of calib
 //	//enable adc interrupt
 //	ADC1->CR1 |= ADC_CR1_EOCIE;
 //	NVIC_EnableIRQ(ADC1_2_IRQn);
@@ -123,6 +137,7 @@ void beep(uint32_t count, uint32_t ms) { // function for zummer signal
 		delay_ms(ms);
 		GPIOA->ODR &= ~GPIO_ODR_ODR15;
 		delay_ms(ms);
+
 	}
 }
 
@@ -244,9 +259,10 @@ void displayBat(uint32_t batVal) {
 
 int main(void) {
 	//setup perif
-	// setup clock system
+	// setup clock system and swo
 	setupRCCTo72MHz();
 	setupSysTick();
+	setupSWO(0x1, SystemCoreClock, 2000000);
 	RCC->APB2ENR |= (RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPBEN
 			| RCC_APB2ENR_ADC1EN); // turn on clock on ports A, B and ADC1
 	//setup PA0 to analog mode
@@ -265,21 +281,19 @@ int main(void) {
 			| GPIO_CRH_CNF9 |
 			GPIO_CRH_MODE10 | GPIO_CRH_CNF10); //reset leds
 
-	GPIOB->CRL |= (GPIO_CRL_MODE0_1 | GPIO_CRL_MODE1_1 | GPIO_CRL_MODE2_1
-			| GPIO_CRL_MODE4_1 | GPIO_CRL_MODE5_1 |
-			GPIO_CRL_MODE6_1 | GPIO_CRL_MODE7_1);
-	GPIOB->CRH |= (GPIO_CRH_MODE8_1 | GPIO_CRH_MODE9_1 | GPIO_CRH_MODE10_1); //leds to output with max speed 2MHz
+	GPIOB->CRL |= (GPIO_CRL_MODE0_0 | GPIO_CRL_MODE1_0 | GPIO_CRL_MODE2_0
+			| GPIO_CRL_MODE4_0 | GPIO_CRL_MODE5_0 |
+			GPIO_CRL_MODE6_0 | GPIO_CRL_MODE7_0);
+	GPIOB->CRH |= (GPIO_CRH_MODE8_0 | GPIO_CRH_MODE9_0 | GPIO_CRH_MODE10_0); //leds to output with max speed 10MHz
 
 	// setup buttons
 	GPIOB->CRH &= ~(GPIO_CRH_MODE11 | GPIO_CRH_CNF11); //reset BZ
 	GPIOA->CRL &= ~(GPIO_CRL_MODE6 | GPIO_CRL_CNF6 | GPIO_CRL_MODE7
 			| GPIO_CRL_CNF7); //reset Sp+, Sp-
 
-	GPIOB->CRH |= GPIO_CRH_CNF11_1; //Bz to input pull down
-	GPIOB->ODR |= GPIO_ODR_ODR11;
-	GPIOA->CRL |= (GPIO_CRL_CNF6_0 | GPIO_CRL_CNF7_0); //Sp+, Sp- to input pull down
-	GPIOB->ODR |= (GPIO_ODR_ODR6 | GPIO_ODR_ODR7);
+	GPIOB->CRH |= GPIO_CRH_CNF11_0; //Bz to input pull down
 
+	GPIOA->CRL |= (GPIO_CRL_CNF6_0 | GPIO_CRL_CNF7_0); //Sp+, Sp- to input pull down
 	ADC_setup();
 
 	beep(2, 500);
@@ -288,11 +302,11 @@ int main(void) {
 		uint32_t jA = ADC_Read_JoystickA();
 		uint32_t jB = ADC_Read_JoystickB();
 		uint32_t vBat = ADC_Read_VBAT();
-		printf(
-				"Joystick Alpha 1: %lu, Joystick Beta 1: %lu, vBat adc data: %lu, speed: %lu",
-				jA, jB, vBat, speedDisplay);
-
-		displayBat(vBat);
+/*		if (IsITMAvailable != 0){
+			printf(
+					"Joystick Alpha 1: %lu, Joystick Beta 1: %lu, vBat adc data: %lu, speed: %lu \n",
+					jA, jB, vBat, speedDisplay);
+		}*/
 
 		// zomer
 		if ((GPIOB->IDR & GPIO_IDR_IDR11) != 0) {
@@ -301,18 +315,22 @@ int main(void) {
 
 		//Sp+
 		if ((GPIOB->IDR & GPIO_IDR_IDR6) != 0) {
-			if (speedDisplay < 5) {
 				speedDisplay++;
-			}
 		}
 		//Sp+
 		if ((GPIOB->IDR & GPIO_IDR_IDR7) != 0) {
-			if (speedDisplay > 0) {
 				speedDisplay--;
-			}
 		}
 
-		displaySpeed(speedDisplay);
+		if (speedDisplay > 4) {
+			speedDisplay = 4;
+		}else if (speedDisplay < 0){
+			speedDisplay = 0;
+		}
 
+
+		displaySpeed(speedDisplay);
+		displayBat(vBat);
+		delay_ms(100);
 	}
 }
