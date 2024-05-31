@@ -26,18 +26,18 @@ void delay(){
 
 void setupRCCTo72MHz(){
 	RCC->CR |= RCC_CR_HSEON; // turn on ext. clock
-	//Enable PLL
-	RCC->CR |= RCC_CR_PLLON;
-	// PLL Source = HSE
-	RCC->CFGR |= RCC_CFGR_PLLSRC;
-	// HSE clock isn't divided
-	RCC->CFGR &= ~(RCC_CFGR_PLLXTPRE);
-	//set PLLMUL to 9
-	RCC->CFGR |= (RCC_CFGR_PLLMULL9);
-	//set PLL as system clock
-	RCC->CFGR |= (RCC_CFGR_SW_1);
-	//set APB1 prescaller to 2
-	RCC->CFGR |= (RCC_CFGR_PPRE1_2);
+//	//Enable PLL
+//	RCC->CR |= RCC_CR_PLLON;
+//	// PLL Source = HSE
+//	RCC->CFGR |= RCC_CFGR_PLLSRC;
+//	// HSE clock isn't divided
+//	RCC->CFGR &= ~(RCC_CFGR_PLLXTPRE);
+//	//set PLLMUL to 9
+//	RCC->CFGR |= (RCC_CFGR_PLLMULL9);
+//	//set PLL as system clock
+//	RCC->CFGR |= (RCC_CFGR_SW_1);
+//	//set APB1 prescaller to 2
+//	RCC->CFGR |= (RCC_CFGR_PPRE1_2);
 
 }
 
@@ -82,8 +82,8 @@ int main(void)
 	// setup update interrupt
 //	TIM1->DIER |= TIM_DIER_UIE; // update interrupt enable
 	// setup timer freq
-	TIM1->PSC = 4 - 1; // 72Mhz / 4 = 18MHz -> first prescaler
-	TIM1->ARR = 500 - 1; // 18MHz / 500 = 36kHz -> second prescaler
+	TIM1->PSC = 1 - 1; // 72Mhz / 4 = 18MHz -> first prescaler
+	TIM1->ARR = 255 - 1; // 18MHz / 500 = 36kHz -> second prescaler
 	// (max tick count in one PWM Pulse) --> finish freq = 36kHz,
 
 //	NVIC_EnableIRQ(TIM1_UP_IRQn); //enable update irq
@@ -112,11 +112,11 @@ int main(void)
 	TIM1->CCMR1 |= (TIM_CCMR1_OC2M_2 | TIM_CCMR1_OC2M_1); // chanel 2 to PWM mode 1
 	TIM1->CCMR2 |= (TIM_CCMR2_OC3M_2 | TIM_CCMR2_OC3M_1); // chanel 3 to PWM mode 1
 	TIM1->CCMR2 |= (TIM_CCMR2_OC4M_2 | TIM_CCMR2_OC4M_1); // chanel 4 to PWM mode 1
-	//turn on PWM (active -> high)
-	TIM1->CCER |= (TIM_CCER_CC1E | TIM_CCER_CC1P);
-	TIM1->CCER |= (TIM_CCER_CC2E | TIM_CCER_CC2P);
-	TIM1->CCER |= (TIM_CCER_CC3E | TIM_CCER_CC3P);
-	TIM1->CCER |= (TIM_CCER_CC4E | TIM_CCER_CC4P);
+	//turn on PWM (active -> low)
+	TIM1->CCER |= (TIM_CCER_CC1E); //| TIM_CCER_CC1P);
+	TIM1->CCER |= (TIM_CCER_CC2E);// | TIM_CCER_CC2P);
+	TIM1->CCER |= (TIM_CCER_CC3E); //| TIM_CCER_CC3P);
+	TIM1->CCER |= (TIM_CCER_CC4E);// | TIM_CCER_CC4P);
 
 	//set duty to chanels
 	TIM1->CCR1 = 0;

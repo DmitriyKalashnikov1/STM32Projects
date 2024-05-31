@@ -11,4 +11,4 @@
 ../Core/Src/main.c:198:10:ADC_Read_JoystickA	0	static
 ../Core/Src/main.c:212:10:ADC_Read_JoystickB	0	static
 ../Core/Src/main.c:226:6:displayBat	0	static
-../Core/Src/main.c:260:5:main	16	static
+../Core/Src/main.c:260:5:main	8	static

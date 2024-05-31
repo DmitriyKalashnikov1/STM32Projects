@@ -115,19 +115,19 @@ void delay_ms(uint32_t ms) {
 void setupRCCTo72MHz() {
 	RCC->CR |= RCC_CR_HSEON; // turn on ext. clock
 	//Enable PLL
-	RCC->CR |= RCC_CR_PLLON;
-	// PLL Source = HSE
-	RCC->CFGR |= RCC_CFGR_PLLSRC;
-	// HSE clock isn't divided
-	RCC->CFGR &= ~(RCC_CFGR_PLLXTPRE);
-	//set PLLMUL to 9
-	RCC->CFGR |= (RCC_CFGR_PLLMULL9);
-	//set PLL as system clock
-	RCC->CFGR |= (RCC_CFGR_SW_1);
+//	RCC->CR |= RCC_CR_PLLON;
+//	// PLL Source = HSE
+//	RCC->CFGR |= RCC_CFGR_PLLSRC;
+//	// HSE clock isn't divided
+//	RCC->CFGR &= ~(RCC_CFGR_PLLXTPRE);
+//	//set PLLMUL to 9
+//	RCC->CFGR |= (RCC_CFGR_PLLMULL9);
+//	//set PLL as system clock
+//	RCC->CFGR |= (RCC_CFGR_SW_1);
 	//set APB1 prescaller to 2
 	RCC->CFGR |= (RCC_CFGR_PPRE1_2);
-	// setup adc prescaller to 8
-	RCC->CFGR |= RCC_CFGR_ADCPRE_DIV8;
+	// setup adc prescaller to 2
+	RCC->CFGR |= RCC_CFGR_ADCPRE_DIV2;
 
 }
 
@@ -262,7 +262,7 @@ int main(void) {
 	// setup clock system and swo
 	setupRCCTo72MHz();
 	setupSysTick();
-	setupSWO(0x1, SystemCoreClock, 2000000);
+	//setupSWO(0x1, SystemCoreClock, 2000000);
 	RCC->APB2ENR |= (RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPBEN
 			| RCC_APB2ENR_ADC1EN); // turn on clock on ports A, B and ADC1
 	//setup PA0 to analog mode
@@ -291,17 +291,21 @@ int main(void) {
 	GPIOA->CRL &= ~(GPIO_CRL_MODE6 | GPIO_CRL_CNF6 | GPIO_CRL_MODE7
 			| GPIO_CRL_CNF7); //reset Sp+, Sp-
 
-	GPIOB->CRH |= GPIO_CRH_CNF11_0; //Bz to input pull down
+	GPIOB->CRH |= GPIO_CRH_CNF11_1; //Bz to input pull down
 
-	GPIOA->CRL |= (GPIO_CRL_CNF6_0 | GPIO_CRL_CNF7_0); //Sp+, Sp- to input pull down
+	GPIOA->CRL |= (GPIO_CRL_CNF6_1 | GPIO_CRL_CNF7_1); //Sp+, Sp- to input pull down
 	ADC_setup();
 
-	beep(2, 500);
+	GPIOB->ODR |= GPIO_ODR_ODR1;
+	delay_ms(500);
+	GPIOB->ODR &= ~GPIO_ODR_ODR1;
+	delay_ms(500);
+	//beep(2, 500);
 
 	while (1) {
-		uint32_t jA = ADC_Read_JoystickA();
-		uint32_t jB = ADC_Read_JoystickB();
-		uint32_t vBat = ADC_Read_VBAT();
+	//	uint32_t jA = ADC_Read_JoystickA();
+//		uint32_t jB = ADC_Read_JoystickB();
+	//	uint32_t vBat = ADC_Read_VBAT();
 /*		if (IsITMAvailable != 0){
 			printf(
 					"Joystick Alpha 1: %lu, Joystick Beta 1: %lu, vBat adc data: %lu, speed: %lu \n",
@@ -315,11 +319,13 @@ int main(void) {
 
 		//Sp+
 		if ((GPIOB->IDR & GPIO_IDR_IDR6) != 0) {
-				speedDisplay++;
+			GPIOB->ODR ^= GPIO_ODR_ODR0;
+			speedDisplay++;
 		}
 		//Sp+
 		if ((GPIOB->IDR & GPIO_IDR_IDR7) != 0) {
-				speedDisplay--;
+			GPIOB->ODR ^= GPIO_ODR_ODR5;
+			speedDisplay--;
 		}
 
 		if (speedDisplay > 4) {
@@ -329,8 +335,8 @@ int main(void) {
 		}
 
 
-		displaySpeed(speedDisplay);
-		displayBat(vBat);
-		delay_ms(100);
+		//displaySpeed(speedDisplay);
+		//displayBat(vBat);
+		//delay_ms(100);
 	}
 }
