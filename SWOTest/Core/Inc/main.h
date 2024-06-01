@@ -59,10 +59,6 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define A1_Pin GPIO_PIN_0
 #define A1_GPIO_Port GPIOA
-#define B1_Pin GPIO_PIN_1
-#define B1_GPIO_Port GPIOA
-#define V_Pin GPIO_PIN_4
-#define V_GPIO_Port GPIOA
 #define BTN1_Pin GPIO_PIN_6
 #define BTN1_GPIO_Port GPIOA
 #define BTN2_Pin GPIO_PIN_7

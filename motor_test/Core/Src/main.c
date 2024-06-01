@@ -28,16 +28,16 @@ void setupRCCTo72MHz(){
 	RCC->CR |= RCC_CR_HSEON; // turn on ext. clock
 //	//Enable PLL
 //	RCC->CR |= RCC_CR_PLLON;
-//	// PLL Source = HSE
-//	RCC->CFGR |= RCC_CFGR_PLLSRC;
-//	// HSE clock isn't divided
-//	RCC->CFGR &= ~(RCC_CFGR_PLLXTPRE);
-//	//set PLLMUL to 9
-//	RCC->CFGR |= (RCC_CFGR_PLLMULL9);
-//	//set PLL as system clock
-//	RCC->CFGR |= (RCC_CFGR_SW_1);
-//	//set APB1 prescaller to 2
-//	RCC->CFGR |= (RCC_CFGR_PPRE1_2);
+	// PLL Source = HSE
+	RCC->CFGR |= RCC_CFGR_PLLSRC;
+	// HSE clock isn't divided
+	RCC->CFGR &= ~(RCC_CFGR_PLLXTPRE);
+	//set PLLMUL to 9
+	RCC->CFGR |= (RCC_CFGR_PLLMULL9);
+	//set PLL as system clock
+	RCC->CFGR |= (RCC_CFGR_SW_1);
+	//set APB1 prescaller to 2
+	RCC->CFGR |= (RCC_CFGR_PPRE1_2);
 
 }
 

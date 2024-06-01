@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "stdio.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -40,47 +40,47 @@ int __io_putchar(int ch){
 	return ch;
 }
 
-uint32_t ADC_Read_VBAT() {
-	ADC1->CR2 &= ~(ADC_CR2_ADON); // turn of adc
-	// select 4 channel
-	ADC1->SQR1 = 0; // 1 regular channel
-	ADC1->SQR2 = 0x00000000;
-	ADC1->SQR3 = 0x00000100; // 1 convert - channel 4
-	ADC1->CR2 |= (ADC_CR2_ADON); // turn on adc
-	ADC1->CR2 |= ADC_CR2_SWSTART; // start adc convert
-	while (!(ADC1->SR & ADC_SR_EOC)) {
-	}; //wait for end of convert
-
-	return ADC1->DR; // read adc data
-}
-
-uint32_t ADC_Read_JoystickA() {
-	ADC1->CR2 &= ~(ADC_CR2_ADON); // turn of adc
-	// select 0 channel
-	ADC1->SQR1 = 0; // 1 regular channel
-	ADC1->SQR2 = 0x00000000;
-	ADC1->SQR3 = 0x00000000; // 1 convert - channel 0
-	ADC1->CR2 |= (ADC_CR2_ADON); // turn on adc
-	ADC1->CR2 |= ADC_CR2_SWSTART; // start adc convert
-	while (!(ADC1->SR & ADC_SR_EOC)) {
-	}; //wait for end of convert
-
-	return ADC1->DR; // read adc data
-}
-
-uint32_t ADC_Read_JoystickB() {
-	ADC1->CR2 &= ~(ADC_CR2_ADON); // turn of adc
-	// select 1 channel
-	ADC1->SQR1 = 0; // 1 regular channel
-	ADC1->SQR2 = 0x00000000;
-	ADC1->SQR3 = 0x00000001; // 1 convert - channel 1
-	ADC1->CR2 |= (ADC_CR2_ADON); // turn on adc
-	ADC1->CR2 |= ADC_CR2_SWSTART; // start adc convert
-	while (!(ADC1->SR & ADC_SR_EOC)) {
-	}; //wait for end of convert
-
-	return ADC1->DR; // read adc data
-}
+//uint32_t ADC_Read_VBAT() {
+//	ADC1->CR2 &= ~(ADC_CR2_ADON); // turn of adc
+//	// select 4 channel
+//	ADC1->SQR1 = 0; // 1 regular channel
+//	ADC1->SQR2 = 0x00000000;
+//	ADC1->SQR3 = 0x00000100; // 1 convert - channel 4
+//	ADC1->CR2 |= (ADC_CR2_ADON); // turn on adc
+//	ADC1->CR2 |= ADC_CR2_SWSTART; // start adc convert
+//	while (!(ADC1->SR & ADC_SR_EOC)) {
+//	}; //wait for end of convert
+//
+//	return ADC1->DR; // read adc data
+//}
+//
+//uint32_t ADC_Read_JoystickA() {
+//	ADC1->CR2 &= ~(ADC_CR2_ADON); // turn of adc
+//	// select 0 channel
+//	ADC1->SQR1 = 0; // 1 regular channel
+//	ADC1->SQR2 = 0x00000000;
+//	ADC1->SQR3 = 0x00000000; // 1 convert - channel 0
+//	ADC1->CR2 |= (ADC_CR2_ADON); // turn on adc
+//	ADC1->CR2 |= ADC_CR2_SWSTART; // start adc convert
+//	while (!(ADC1->SR & ADC_SR_EOC)) {
+//	}; //wait for end of convert
+//
+//	return ADC1->DR; // read adc data
+//}
+//
+//uint32_t ADC_Read_JoystickB() {
+//	ADC1->CR2 &= ~(ADC_CR2_ADON); // turn of adc
+//	// select 1 channel
+//	ADC1->SQR1 = 0; // 1 regular channel
+//	ADC1->SQR2 = 0x00000000;
+//	ADC1->SQR3 = 0x00000001; // 1 convert - channel 1
+//	ADC1->CR2 |= (ADC_CR2_ADON); // turn on adc
+//	ADC1->CR2 |= ADC_CR2_SWSTART; // start adc convert
+//	while (!(ADC1->SR & ADC_SR_EOC)) {
+//	}; //wait for end of convert
+//
+//	return ADC1->DR; // read adc data
+//}
 
 
 /* USER CODE END PM */
@@ -142,14 +142,19 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  H
-	  uint32_t jA = ADC_Read_JoystickA();
-	  uint32_t jB = ADC_Read_JoystickB();
-	  uint32_t vBat = ADC_Read_VBAT();
+	  HAL_ADCEx_InjectedStart(&hadc1);
+	  HAL_ADCEx_InjectedPollForConversion(&hadc1, 10);
+	  uint32_t jA = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1);
+	  HAL_ADCEx_InjectedStart(&hadc1);
+	  HAL_ADCEx_InjectedPollForConversion(&hadc1, 10);
+	  uint32_t jB = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2);
+	  HAL_ADCEx_InjectedStart(&hadc1);
+	  HAL_ADCEx_InjectedPollForConversion(&hadc1, 10);
+	  uint32_t vBat = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3);
 	  int btn1 = HAL_GPIO_ReadPin(BTN1_GPIO_Port, BTN1_Pin);
 	  int btn2 = HAL_GPIO_ReadPin(BTN2_GPIO_Port, BTN2_Pin);
 	  int btn3 = HAL_GPIO_ReadPin(BTN3_GPIO_Port, BTN3_Pin);
-	  printf("SWO Test, btn1: %i, btn2: %i, btn3: %i, vBat: %lu, Joystick Alpha 1: %lu, Joystick Beta 1: %lu \n", btn1, btn2, btn3, vBat, jA, jB);
+	  printf("SWO Test, btn1: %i, btn2: %i, btn3: %i, Joystick Alpha 1: %lu, Joystick Beta 1: %lu, vBat: %lu \n", btn1, btn2, btn3, jA, jB, vBat);
 	  HAL_Delay(500);
     /* USER CODE END WHILE */
 
@@ -171,10 +176,13 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -184,17 +192,17 @@ void SystemClock_Config(void)
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
   {
     Error_Handler();
   }
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC;
-  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV2;
+  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV6;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     Error_Handler();
@@ -213,7 +221,7 @@ static void MX_ADC1_Init(void)
 
   /* USER CODE END ADC1_Init 0 */
 
-  ADC_ChannelConfTypeDef sConfig = {0};
+  ADC_InjectionConfTypeDef sConfigInjected = {0};
 
   /* USER CODE BEGIN ADC1_Init 1 */
 
@@ -222,7 +230,7 @@ static void MX_ADC1_Init(void)
   /** Common config
   */
   hadc1.Instance = ADC1;
-  hadc1.Init.ScanConvMode = ADC_SCAN_DISABLE;
+  hadc1.Init.ScanConvMode = ADC_SCAN_ENABLE;
   hadc1.Init.ContinuousConvMode = DISABLE;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
@@ -233,12 +241,35 @@ static void MX_ADC1_Init(void)
     Error_Handler();
   }
 
-  /** Configure Regular Channel
+  /** Configure Injected Channel
   */
-  sConfig.Channel = ADC_CHANNEL_0;
-  sConfig.Rank = ADC_REGULAR_RANK_1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
-  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  sConfigInjected.InjectedChannel = ADC_CHANNEL_0;
+  sConfigInjected.InjectedRank = ADC_INJECTED_RANK_1;
+  sConfigInjected.InjectedNbrOfConversion = 3;
+  sConfigInjected.InjectedSamplingTime = ADC_SAMPLETIME_28CYCLES_5;
+  sConfigInjected.ExternalTrigInjecConv = ADC_INJECTED_SOFTWARE_START;
+  sConfigInjected.AutoInjectedConv = DISABLE;
+  sConfigInjected.InjectedDiscontinuousConvMode = DISABLE;
+  sConfigInjected.InjectedOffset = 0;
+  if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Injected Channel
+  */
+  sConfigInjected.InjectedChannel = ADC_CHANNEL_1;
+  sConfigInjected.InjectedRank = ADC_INJECTED_RANK_2;
+  if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Injected Channel
+  */
+  sConfigInjected.InjectedChannel = ADC_CHANNEL_4;
+  sConfigInjected.InjectedRank = ADC_INJECTED_RANK_3;
+  if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK)
   {
     Error_Handler();
   }

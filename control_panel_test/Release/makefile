@@ -62,8 +62,8 @@ all: main-build
 main-build: control_panel_test.elf secondary-outputs
 
 # Tool invocations
-control_panel_test.elf control_panel_test.map: $(OBJS) $(USER_OBJS) E:\Creations\C++_programs\STM32Projects\control_panel_test\STM32F103CBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "control_panel_test.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"E:\Creations\C++_programs\STM32Projects\control_panel_test\STM32F103CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="control_panel_test.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+control_panel_test.elf control_panel_test.map: $(OBJS) $(USER_OBJS) fail-specified-linker-script-missing makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "control_panel_test.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 --specs=nosys.specs -Wl,-Map="control_panel_test.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
