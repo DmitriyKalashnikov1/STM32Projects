@@ -20,8 +20,33 @@
 #include "stm32f103xb.h"
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void delay(){
-	for(uint32_t i=0; i < 2000000; i++){}
+
+#define SystemCoreClock 72000000UL
+
+
+__IO uint32_t SysTick_CNT = 0; //SysTick tick count var
+
+void SysTick_Handler() {
+	if (SysTick_CNT > 0) {
+		SysTick_CNT--;
+	}
+}
+
+void setupSysTick() {
+	SysTick->LOAD &= ~SysTick_LOAD_RELOAD_Msk; // Reset Load val
+	SysTick->LOAD = SystemCoreClock / (1000 - 1); // Set timer period to 1 ms
+	SysTick->VAL &= ~SysTick_VAL_CURRENT_Msk; // reset Val
+	SysTick->CTRL |= SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_TICKINT_Msk
+			| SysTick_CTRL_ENABLE_Msk; // select core clock for timer, enable irq, start timer
+}
+
+void delay_ms(uint32_t ms) {
+	SysTick->VAL &= ~SysTick_VAL_CURRENT_Msk; // reset Val
+	// set delay period
+	SysTick->VAL = SystemCoreClock / (1000 - 1); // Set timer period to 1 ms
+	SysTick_CNT = ms;
+	while (SysTick_CNT)
+		; //sleep for delay time
 }
 
 void setupRCCTo72MHz(){
@@ -57,6 +82,7 @@ int main(void)
 {
 	// setup RCC
 	setupRCCTo72MHz();
+	setupSysTick();
 	RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;  // turn on clock on port A
 	RCC->APB2ENR |= RCC_APB2ENR_AFIOEN; // turn on clock on alternative funcs (interrupts)
 	RCC->APB2ENR |= RCC_APB2ENR_TIM1EN; // turn on clock of timer 1
@@ -64,6 +90,10 @@ int main(void)
 	//setup PA8-PA11 to alternative push-pull output with max speed 50 MHz (need for PWM)
 	GPIOA->CRH &= ~(GPIO_CRH_MODE8 | GPIO_CRH_CNF8 | GPIO_CRH_MODE9 | GPIO_CRH_CNF9); //reset PA8-PA9
 	GPIOA->CRH &= ~(GPIO_CRH_MODE10 | GPIO_CRH_CNF10 | GPIO_CRH_MODE11 | GPIO_CRH_CNF11); //reset PA10-PA11
+
+//	GPIOA->CRL &= ~(GPIO_CRL_MODE5 | GPIO_CRL_CNF5); //reset PA5(rele)
+//	GPIOA->CRL |= (GPIO_CRL_MODE5_0);
+
 
 	GPIOA->CRH |= (GPIO_CRH_MODE8_0 | GPIO_CRH_MODE8_1 | GPIO_CRH_CNF8_1 ); //alternative push-pull output with max speed 50 MHz
 	GPIOA->CRH |= (GPIO_CRH_MODE9_0 | GPIO_CRH_MODE9_1 | GPIO_CRH_CNF9_1 ); //alternative push-pull output with max speed 50 MHz
@@ -82,9 +112,9 @@ int main(void)
 	// setup update interrupt
 //	TIM1->DIER |= TIM_DIER_UIE; // update interrupt enable
 	// setup timer freq
-	TIM1->PSC = 1 - 1; // 72Mhz / 4 = 18MHz -> first prescaler
-	TIM1->ARR = 255 - 1; // 18MHz / 500 = 36kHz -> second prescaler
-	// (max tick count in one PWM Pulse) --> finish freq = 36kHz,
+	TIM1->PSC = 4 - 1; // 72Mhz / 4 = 18MHz -> first prescaler
+	TIM1->ARR = 6000 - 1; // 18MHz / 6000 = 3kHz -> second prescaler
+	// (max tick count in one PWM Pulse) --> finish freq = 3kHz,
 
 //	NVIC_EnableIRQ(TIM1_UP_IRQn); //enable update irq
 
@@ -122,23 +152,60 @@ int main(void)
 	TIM1->CCR1 = 0;
 	TIM1->CCR2 = 0;
 	TIM1->CCR3 = 0;
-	TIM1->CCR4 = 255;
+	TIM1->CCR4 = 0;
 
 	TIM1->CR1 |= TIM_CR1_CEN; // start timer
 
   while (1)
   {
-
-	  for (uint32_t f = 0; f < 500; f++){
-		  TIM1->CCR1 = f;
-		  delay();
+	  //GPIOA->ODR |= GPIO_ODR_ODR5;
+	  for (uint32_t f = 1800; f < 6000; f++){
+		  TIM1->CCR3 = f;
+		  delay_ms(1);
 	  }
-	  for (uint32_t f = 500; f > 0 ; f--){
-		  TIM1->CCR1 = f;
-		  delay();
+	  for (uint32_t f = 6000; f >= 1800 ; f--){
+		  TIM1->CCR3 = f;
+		  delay_ms(1);
 	  }
-
-  }
-
+	  TIM1->CCR3 = 0;
+	 // GPIOA->ODR &= ~GPIO_ODR_ODR5;
+	  delay_ms(100);
+//	  GPIOA->ODR |= GPIO_ODR_ODR5;
+	  for (uint32_t f = 1800; f < 6000; f++){
+		  TIM1->CCR4 = f;
+		  delay_ms(1);
+	  }
+	  for (uint32_t f = 6000; f >= 1800 ; f--){
+		  TIM1->CCR4 = f;
+		  delay_ms(1);
+	  }
+//	  TIM1->CCR3 = 0;
+	  TIM1->CCR4 = 0;
+//	  GPIOA->ODR &= ~GPIO_ODR_ODR5;
+	  delay_ms(100);
+//
+//	  for (uint32_t f = 0; f < 500; f++){
+//		  TIM1->CCR2 = f;
+//		  delay_ms(2);
+//	  }
+//	  for (uint32_t f = 500; f > 0 ; f--){
+//		  TIM1->CCR2 = f;
+//		  delay_ms(2);
+//	  }
+//	  TIM1->CCR2 = 0;
+//	  TIM1->CCR1 = 0;
+//	  delay_ms(1000);
+//
+//	  for (uint32_t f = 0; f < 500; f++){
+//		  TIM1->CCR1 = f;
+//		  delay_ms(2);
+//	  }
+//	  for (uint32_t f = 500; f > 0 ; f--){
+//		  TIM1->CCR1 = f;
+//		  delay_ms(2);
+//	  }
+//	  TIM1->CCR2 = 0;
+//	  TIM1->CCR1 = 0;
+//	  delay_ms(1000);
+ }
 }
-

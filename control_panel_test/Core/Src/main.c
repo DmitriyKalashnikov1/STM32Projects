@@ -27,6 +27,7 @@
  * SP1-SP5 leds -> B_ODR0-2, B_ODR4,5
  * BAT1-5 leds ->  B_ODR6,7,8,9,10
  * BZ, SP+, SP- -> B_ODR11, A_ODR6, A_ODR7
+ *
  * VBAT analog -> A_ODR4
  * jA, jB analog -> A_ODR0, A_ODR1
  * */
@@ -36,12 +37,9 @@
 
 int IsITMAvailable = 0;
 
-int _write(int le, char *ptr, int len){
-
-int DataIdx;
-
-for(DataIdx = 0; DataIdx < len; DataIdx++){
-ITM_SendChar(*ptr++);
+int __io_putchar(int ch){
+	ITM_SendChar(ch);
+	return ch;
 }
 
 
@@ -115,15 +113,15 @@ void delay_ms(uint32_t ms) {
 void setupRCCTo72MHz() {
 	RCC->CR |= RCC_CR_HSEON; // turn on ext. clock
 	//Enable PLL
-//	RCC->CR |= RCC_CR_PLLON;
-//	// PLL Source = HSE
-//	RCC->CFGR |= RCC_CFGR_PLLSRC;
-//	// HSE clock isn't divided
-//	RCC->CFGR &= ~(RCC_CFGR_PLLXTPRE);
-//	//set PLLMUL to 9
-//	RCC->CFGR |= (RCC_CFGR_PLLMULL9);
-//	//set PLL as system clock
-//	RCC->CFGR |= (RCC_CFGR_SW_1);
+	RCC->CR |= RCC_CR_PLLON;
+	// PLL Source = HSE
+	RCC->CFGR |= RCC_CFGR_PLLSRC;
+	// HSE clock isn't divided
+	RCC->CFGR &= ~(RCC_CFGR_PLLXTPRE);
+	//set PLLMUL to 9
+	RCC->CFGR |= (RCC_CFGR_PLLMULL9);
+	//set PLL as system clock
+	RCC->CFGR |= (RCC_CFGR_SW_1);
 	//set APB1 prescaller to 2
 	RCC->CFGR |= (RCC_CFGR_PPRE1_2);
 	// setup adc prescaller to 2
