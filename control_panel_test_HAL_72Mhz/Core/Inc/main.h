@@ -69,6 +69,7 @@ void Error_Handler(void);
 #define SP_DOWN_GPIO_Port GPIOA
 #define BZ_Pin GPIO_PIN_11
 #define BZ_GPIO_Port GPIOB
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

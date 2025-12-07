@@ -1,0 +1,3 @@
+../Core/Src/Drivers/ACS712.c:11:7:ACS712_ReadCurrentDC	16	static
+../Core/Src/Drivers/ACS712.c:25:7:ACS712_ReadVoltageDC	8	static
+../Core/Src/Drivers/ACS712.c:34:7:ACS712_DebugPrintf	32	static

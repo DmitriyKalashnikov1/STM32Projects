@@ -1,0 +1,6 @@
+../Core/Src/main.c:107:6:HAL_TIM_PeriodElapsedCallback	0	static
+../Core/Src/main.c:119:12:NRF24_Init	144	static
+../Core/Src/main.c:140:5:__io_putchar	16	static
+../Core/Src/main.c:590:6:Error_Handler	8	static,ignoring_inline_asm
+../Core/Src/main.c:222:6:SystemClock_Config	88	static
+../Core/Src/main.c:149:5:main	128	static

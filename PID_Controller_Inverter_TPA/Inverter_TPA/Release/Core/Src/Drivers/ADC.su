@@ -1,0 +1,2 @@
+../Core/Src/Drivers/ADC.c:12:10:ADC_CH1_Read	8	static
+../Core/Src/Drivers/ADC.c:20:10:ADC_CH2_Read	8	static

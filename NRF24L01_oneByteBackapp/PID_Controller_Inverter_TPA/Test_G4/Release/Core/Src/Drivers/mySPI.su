@@ -1,0 +1,5 @@
+../Core/Src/Drivers/mySPI.c:12:6:SPI_Enable	0	static
+../Core/Src/Drivers/mySPI.c:17:6:SPI_Disable	0	static
+../Core/Src/Drivers/mySPI.c:24:6:SPI_Transmit	0	static
+../Core/Src/Drivers/mySPI.c:41:6:SPI_Receive	0	static
+../Core/Src/Drivers/mySPI.c:59:6:SPI_Transmit_Receive	16	static

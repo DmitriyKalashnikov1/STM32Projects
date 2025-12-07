@@ -1,0 +1,14 @@
+../Core/Src/main.c:120:6:HAL_TIM_PeriodElapsedCallback	17
+../Core/Src/main.c:162:12:NRF24_Init	1
+../Core/Src/main.c:182:5:__io_putchar	1
+../Core/Src/main.c:191:5:main	2
+../Core/Src/main.c:267:6:SystemClock_Config	3
+../Core/Src/main.c:315:13:MX_ADC1_Init	5
+../Core/Src/main.c:392:13:MX_RNG_Init	2
+../Core/Src/main.c:419:13:MX_SPI1_Init	2
+../Core/Src/main.c:459:13:MX_TIM3_Init	4
+../Core/Src/main.c:504:13:MX_TIM4_Init	4
+../Core/Src/main.c:549:13:MX_USART2_UART_Init	5
+../Core/Src/main.c:595:13:MX_DMA_Init	1
+../Core/Src/main.c:614:13:MX_GPIO_Init	1
+../Core/Src/main.c:680:6:Error_Handler	1

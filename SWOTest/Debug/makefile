@@ -1,6 +1,6 @@
 ################################################################################
 # Automatically-generated file. Do not edit!
-# Toolchain: GNU Tools for STM32 (10.3-2021.10)
+# Toolchain: GNU Tools for STM32 (13.3.rel1)
 ################################################################################
 
 -include ../makefile.init
@@ -52,6 +52,9 @@ default.size.stdout \
 OBJDUMP_LIST += \
 SWOTest.list \
 
+OBJCOPY_HEX += \
+SWOTest.hex \
+
 
 # All Target
 all: main-build
@@ -60,8 +63,8 @@ all: main-build
 main-build: SWOTest.elf secondary-outputs
 
 # Tool invocations
-SWOTest.elf SWOTest.map: $(OBJS) $(USER_OBJS) E:\Creations\C++_programs\STM32Projects\SWOTest\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "SWOTest.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"E:\Creations\C++_programs\STM32Projects\SWOTest\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SWOTest.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+SWOTest.elf SWOTest.map: $(OBJS) $(USER_OBJS) /media/dmitriykalshnikov/THDD/Creations/C++_programs/STM32Projects/SWOTest/STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "SWOTest.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"/media/dmitriykalshnikov/THDD/Creations/C++_programs/STM32Projects/SWOTest/STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SWOTest.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -75,12 +78,17 @@ SWOTest.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
+SWOTest.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "SWOTest.hex"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 # Other Targets
 clean:
-	-$(RM) SWOTest.elf SWOTest.list SWOTest.map default.size.stdout
+	-$(RM) SWOTest.elf SWOTest.hex SWOTest.list SWOTest.map default.size.stdout
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_HEX)
 
 fail-specified-linker-script-missing:
 	@echo 'Error: Cannot find the specified linker script. Check the linker settings in the build configuration.'
